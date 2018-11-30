@@ -1,6 +1,6 @@
 # truoraclient
 
-> A Vue.js project
+> Client side for the Truora Test
 
 ## Build Setup
 
