@@ -135,25 +135,29 @@ export default {
 
    methods: {
 
-
     reload: function(){
-      this.reInit()
+      location.reload();
     },
 
     buscarRecetaByName: function (){
-      console.log(this.buscarReceta);
-       fetch("http://localhost:8082/v1/recipes/" + this.buscarReceta, {
-         method: "GET"
-       })
-       .then(response => response.json())
-       .then((data) => {
-         console.log(data);
-         this.recetas = data;
-       })
+      if(this.buscarReceta != null)
+      {
+        fetch("http://localhost:8082/v1/recipes/" + this.buscarReceta, {
+          method: "GET"
+        })
+        .then(response => response.json())
+        .then((data) => {
+          console.log(data);
+          this.recetas = data;
+        })
+      }
+      else {
+        alert('Porfavor ingrese una receta valida')
+      }
+
      },
 
     deleteReceta: function (receta){
-      console.log(receta);
       fetch("http://localhost:8082/v1/recipes/" + receta.id, {
         method: "DELETE"
       })
@@ -182,7 +186,10 @@ export default {
       if (!receta.name) {
         alert('Porfavor ingrese el nombre de la Receta');
       }
-      else if (Number(receta.difficulty) > 3 && Number(receta.difficulty) < 1) {
+      else if (!receta.preptime) {
+        alert('Porfavor ingrese el tiempo de preparacion');
+      }
+      else if (Number(receta.difficulty) > 3 || Number(receta.difficulty) < 1) {
         alert('La dificultad va de 1 a 3');
       }
       else
@@ -213,16 +220,22 @@ export default {
     handleOk (evt) {
       evt.preventDefault()
       if (!this.name) {
-        alert('Porfavor ingrese el nombre de la Receta')
+        alert('Porfavor ingrese el nombre de la Receta');
       } else if (!this.preptime){
-        alert('Porfavor ingrese el tiempo de preparacion')
+        alert('Porfavor ingrese el tiempo de preparacion');
       }
       else if (!this.difficulty){
-        alert('Porfavor ingrese la dificultad')
+        alert('Porfavor ingrese la dificultad');
+      }
+      else if (Number(this.difficulty) > 3){
+        alert('Porfavor ingrese una dificultad entre 1 y 3');
+      }
+      else if (Number(this.difficulty) < 1){
+        alert('Porfavor ingrese una dificultad entre 1 y 3');
       }
       else
       {
-        this.handleSubmit()
+        this.handleSubmit();
       }
 
     },
@@ -231,6 +244,7 @@ export default {
 
       let lastId = this.recetas.length;
       let idGenerado = Number(lastId) + 1;
+
       fetch("http://localhost:8082/v1/recipes", {
         body: JSON.stringify({ id : idGenerado, name: this.name, preptime: Number(this.preptime), difficulty: Number(this.difficulty), vegetarian: Boolean(this.vegetarian)}),
         method: "POST",
@@ -245,11 +259,11 @@ export default {
       })
       .then(response => response.json())
       .then((data) => {
-        console.log(data);
         this.getRecetas();
+        this.$refs.myModalRef.hide();
+        alert('Receta creada con exito!');
       })
 
-      console.log(idGenerado);
     }
 
   },
@@ -259,11 +273,7 @@ export default {
       .then(response => response.json())
       .then((data) => {
         this.recetas = data;
-        console.log(data);
     })
   }
 }
 </script>
-
-<style lang="css">
-</style>
