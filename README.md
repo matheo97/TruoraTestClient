@@ -1,6 +1,11 @@
 # truoraclient
 
-> Client side for the Truora Test
+A front end app made in Vuejs in which I learned:
+
+- Bootstrap + Classic HTML/CSS/JS
+- Consuming an API
+- Switching between views
+- Events
 
 ## Build Setup
 
